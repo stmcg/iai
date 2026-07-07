@@ -25,10 +25,18 @@ print.mia <- function(x, digits = 4, ...){
   cat('MIA METHOD FOR CONDITIONAL MEAN ESTIMATION\n')
   cat("==========================================\n\n")
   cat("Setting:\n")
+  method_label <- if (!is.null(x$method) && x$method == 'ice'){
+    'Iterative conditional expectation (ICE)'
+  } else {
+    'Noniterative conditional expectation (NICE)'
+  }
+  cat(sprintf("  %-28s %s\n", "Method:", method_label))
   cat(sprintf("  %-28s %s\n", "Outcome variable type:", x$Y_type))
-  W_info_components <- paste0(x$W_type, " (", x$W_names, ")")
-  W_info <- paste(W_info_components, collapse = ", ")
-  cat(sprintf("  %-28s %s\n", "Auxiliary variable(s) type:", W_info))
+  if (is.null(x$method) || x$method != 'ice'){
+    W_info_components <- paste0(x$W_type, " (", x$W_names, ")")
+    W_info <- paste(W_info_components, collapse = ", ")
+    cat(sprintf("  %-28s %s\n", "Auxiliary variable(s) type:", W_info))
+  }
 
 
   cat("\nResults:\n")

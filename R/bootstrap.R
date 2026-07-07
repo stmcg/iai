@@ -60,8 +60,8 @@ get_CI <- function(mia_res, n_boot = 1000, type = 'bca', conf = 0.95,
 
   # Create progress bar for bootstrap (if requested)
   parallel_enabled <- (!is.null(boot_args$parallel) &&
-                       boot_args$parallel %in% c("multicore", "snow")) ||
-                      !is.null(boot_args$cl)
+                         boot_args$parallel %in% c("multicore", "snow")) ||
+    !is.null(boot_args$cl)
 
   if (show_progress && n_boot > 1 && !parallel_enabled) {
     pb <- progress::progress_bar$new(
@@ -74,15 +74,26 @@ get_CI <- function(mia_res, n_boot = 1000, type = 'bca', conf = 0.95,
 
   boot_func <- function(data, i){
     dat_boot    <- data[i, ]
-    fit <- mia(data = dat_boot,
-               X_names = mia_res$X_names,
-               X_values_1 = mia_res$X_values_1,
-               X_values_2 = mia_res$X_values_2,
-               contrast_type = mia_res$contrast_type,
-               Y_model = mia_res$Y_model,
-               W_model = mia_res$W_model,
-               Y_type = mia_res$Y_type, W_type = mia_res$W_type,
-               n_mc = mia_res$n_mc)
+    if (!is.null(mia_res$method) && mia_res$method == 'ice'){
+      fit <- mia_ice(data = dat_boot,
+                     X_names = mia_res$X_names,
+                     X_values_1 = mia_res$X_values_1,
+                     X_values_2 = mia_res$X_values_2,
+                     contrast_type = mia_res$contrast_type,
+                     Y_model = mia_res$Y_model,
+                     Y_type = mia_res$Y_type,
+                     outer_model = mia_res$outer_model)
+    } else {
+      fit <- mia(data = dat_boot,
+                 X_names = mia_res$X_names,
+                 X_values_1 = mia_res$X_values_1,
+                 X_values_2 = mia_res$X_values_2,
+                 contrast_type = mia_res$contrast_type,
+                 Y_model = mia_res$Y_model,
+                 W_model = mia_res$W_model,
+                 Y_type = mia_res$Y_type, W_type = mia_res$W_type,
+                 n_mc = mia_res$n_mc)
+    }
     if (!is.null(mia_res$X_values_2)){
       if (mia_res$contrast_type == 'none'){
         out <- c(fit$mean_est_1, fit$mean_est_2)
@@ -159,4 +170,3 @@ bca_safe_ci <- function(boot.ci_args, index){
   cis$call <- quote(do.call(boot::boot.ci, boot.ci_args))
   return(cis)
 }
-

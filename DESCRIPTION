@@ -1,7 +1,7 @@
 Package: miapack
 Type: Package
 Title: Marginalization over Incomplete Auxiliaries
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: c(person("Sean", "McGrath", 
              role = c("aut", "cre"),
              email = "sean.mcgrath514@gmail.com", 
