@@ -7,7 +7,7 @@
 #' where \eqn{R_W} and \eqn{R_X} are indicators of non-missing values of \eqn{W} and \eqn{X}, respectively, and \eqn{M} is an indicator of a complete case pattern (i.e., \eqn{Y}, \eqn{X}, and \eqn{W} are non-missing).
 #' This function uses a plug-in estimator of the functional represented as
 #' \deqn{
-#' \mu_{\text{MIA}}(x) = E [ \, E [ Y | X=x, W, M=1 ] \mid X=x, R_W = R_X = 1 \, ]
+#' \mu_{\text{MIA}}(x) = E [ \, E [ Y | X, W, M=1 ] \mid X=x, R_W = R_X = 1 \, ]
 #' }
 #' The function supports estimating the identifying functionals of \eqn{\mu_{\text{MIA}}(x_1)} and \eqn{\mu_{\text{MIA}}(x_2)} as well as contrasts between them (differences, ratios).
 #'
@@ -35,9 +35,9 @@
 #'
 #' \emph{Step 1:} One fits a model for the conditional outcome mean \eqn{g(x, w) = E [ Y | X=x, W=w, M=1 ]} using the complete cases (i.e., units with \eqn{Y}, \eqn{X}, and \eqn{W} observed). Let \eqn{\hat{g}(x, w)} denote the fitted model.
 #'
-#' \emph{Step 2:} For every unit with \eqn{X} and \eqn{W} observed (i.e., \eqn{R_X = R_W = 1}), one computes the fitted outcome mean \eqn{\hat{g}(x, w)} at the target predictor value \eqn{x} and the unit's observed \eqn{w}.
+#' \emph{Step 2:} For every unit with \eqn{X} and \eqn{W} observed (i.e., \eqn{R_X = R_W = 1}), one computes the fitted outcome mean \eqn{\hat{g}(X, W)} at the unit's observed \eqn{X} and \eqn{W}.
 #'
-#' \emph{Step 3:} One regresses the fitted outcome means \eqn{\hat{g}(x, w)} on the predictor(s) \eqn{X} among units with \eqn{R_X = R_W = 1}, using the model specified by \code{outer_model}, and takes the prediction at \eqn{X = x} as the estimate of \eqn{\mu_{\text{MIA}}(x)}. Note that when \code{outer_model} is saturated with respect to \eqn{X} (e.g., \code{g_hat ~ X1 * X2} for binary predictors), this reduces to the sample mean of \eqn{\hat{g}(x, w)} among units with \eqn{X = x} and \eqn{R_X = R_W = 1}.
+#' \emph{Step 3:} One regresses the fitted outcome means \eqn{\hat{g}(X, W)} on the predictor(s) \eqn{X} among units with \eqn{R_X = R_W = 1}, using the model specified by \code{outer_model}, and takes the prediction at \eqn{X = x} as the estimate of \eqn{\mu_{\text{MIA}}(x)}. Note that when \code{outer_model} is saturated with respect to \eqn{X} (e.g., \code{g_hat ~ X1 * X2} for binary predictors), this reduces to the sample mean of \eqn{\hat{g}(x, w)} among units with \eqn{X = x} and \eqn{R_X = R_W = 1}.
 #'
 #'
 #' @references
@@ -175,20 +175,20 @@ mia_ice <- function(data, X_names, X_values_1, X_values_2 = NULL,
   fit_Y <- safe_fit(variable_name = 'Y', variable_type = Y_type,
                     formula = Y_model, data = data_fit_Y)
 
-  # Outer regression and prediction (for X_values_1)
-  outer_res <- get_ice_mean(X_values = X_values_1, X_names = X_names,
-                            data_outer = data_outer, fit_Y = fit_Y,
-                            Y_type = Y_type, outer_model = outer_model)
-  Y_mean <- outer_res$mean_est
-  fit_outer <- outer_res$fit_outer
+  # Computing the fitted outcome means at the observed X and W
+  data_outer$g_hat <- get_Y_pred(df = data_outer, fit_Y = fit_Y, Y_type = Y_type)
 
-  # Outer regression and prediction (for X_values_2)
+  # Outer regression (a single model serves all target predictor values)
+  fit_outer <- stats::lm(outer_model, data = data_outer)
+
+  # Prediction (for X_values_1)
+  Y_mean <- get_ice_mean(X_values = X_values_1, X_names = X_names,
+                         fit_outer = fit_outer)
+
+  # Prediction (for X_values_2)
   if (!is.null(X_values_2)){
-    outer_res_2 <- get_ice_mean(X_values = X_values_2, X_names = X_names,
-                                data_outer = data_outer, fit_Y = fit_Y,
-                                Y_type = Y_type, outer_model = outer_model)
-    Y_mean_2 <- outer_res_2$mean_est
-    fit_outer_2 <- outer_res_2$fit_outer
+    Y_mean_2 <- get_ice_mean(X_values = X_values_2, X_names = X_names,
+                             fit_outer = fit_outer)
     if (contrast_type == 'difference'){
       contrast_est <- Y_mean - Y_mean_2
     } else if (contrast_type == 'ratio'){
@@ -198,7 +198,6 @@ mia_ice <- function(data, X_names, X_values_1, X_values_2 = NULL,
     }
   } else {
     Y_mean_2 <- contrast_est <- NA
-    fit_outer_2 <- NULL
   }
 
   out <- list(
@@ -206,7 +205,7 @@ mia_ice <- function(data, X_names, X_values_1, X_values_2 = NULL,
     mean_est_2 = Y_mean_2,
     contrast_est = contrast_est,
     fit_Y = fit_Y,
-    fit_outer = fit_outer, fit_outer_2 = fit_outer_2,
+    fit_outer = fit_outer,
     Y_type = Y_type,
     X_names = X_names,
     W_names = W_names,
@@ -221,25 +220,13 @@ mia_ice <- function(data, X_names, X_values_1, X_values_2 = NULL,
   return(out)
 }
 
-get_ice_mean <- function(X_values, X_names, data_outer, fit_Y, Y_type, outer_model){
-  # Evaluate g_hat(x, w) at the target X value and each unit's observed W.
-  # The outcome model is evaluated at the fixed target value of X, but the
-  # regressors used in the outer model retain each unit's observed value of X.
-  df_g <- data_outer
-  for (i in 1:length(X_names)){
-    df_g[, X_names[i]] <- X_values[i]
-  }
-  data_outer$g_hat <- get_Y_pred(df = df_g, fit_Y = fit_Y, Y_type = Y_type)
-
-  # Outer regression of g_hat on the observed X, then predict at the target X
-  # value. When outer_model is saturated in X, this recovers the sample mean of
-  # g_hat among units with X = X_values.
-  fit_outer <- stats::lm(outer_model, data = data_outer)
+get_ice_mean <- function(X_values, X_names, fit_outer){
+  # Prediction from the outer regression at the target X value.
   df_pred <- data.frame(matrix(X_values, nrow = 1))
   colnames(df_pred) <- X_names
   mean_est <- as.numeric(stats::predict(fit_outer, newdata = df_pred))
 
-  return(list(mean_est = mean_est, fit_outer = fit_outer))
+  return(mean_est)
 }
 
 get_Y_pred <- function(df, fit_Y, Y_type){

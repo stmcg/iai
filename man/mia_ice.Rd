@@ -49,7 +49,7 @@ This function implements the marginalization over incomplete auxiliaries (MIA) m
 where \eqn{R_W} and \eqn{R_X} are indicators of non-missing values of \eqn{W} and \eqn{X}, respectively, and \eqn{M} is an indicator of a complete case pattern (i.e., \eqn{Y}, \eqn{X}, and \eqn{W} are non-missing).
 This function uses a plug-in estimator of the functional represented as
 \deqn{
-\mu_{\text{MIA}}(x) = E [ \, E [ Y | X=x, W, M=1 ] \mid X=x, R_W = R_X = 1 \, ]
+\mu_{\text{MIA}}(x) = E [ \, E [ Y | X, W, M=1 ] \mid X=x, R_W = R_X = 1 \, ]
 }
 The function supports estimating the identifying functionals of \eqn{\mu_{\text{MIA}}(x_1)} and \eqn{\mu_{\text{MIA}}(x_2)} as well as contrasts between them (differences, ratios).
 }
@@ -58,9 +58,9 @@ The function supports estimating the identifying functionals of \eqn{\mu_{\text{
 
 \emph{Step 1:} One fits a model for the conditional outcome mean \eqn{g(x, w) = E [ Y | X=x, W=w, M=1 ]} using the complete cases (i.e., units with \eqn{Y}, \eqn{X}, and \eqn{W} observed). Let \eqn{\hat{g}(x, w)} denote the fitted model.
 
-\emph{Step 2:} For every unit with \eqn{X} and \eqn{W} observed (i.e., \eqn{R_X = R_W = 1}), one computes the fitted outcome mean \eqn{\hat{g}(x, w)} at the target predictor value \eqn{x} and the unit's observed \eqn{w}.
+\emph{Step 2:} For every unit with \eqn{X} and \eqn{W} observed (i.e., \eqn{R_X = R_W = 1}), one computes the fitted outcome mean \eqn{\hat{g}(X, W)} at the unit's observed \eqn{X} and \eqn{W}.
 
-\emph{Step 3:} One regresses the fitted outcome means \eqn{\hat{g}(x, w)} on the predictor(s) \eqn{X} among units with \eqn{R_X = R_W = 1}, using the model specified by \code{outer_model}, and takes the prediction at \eqn{X = x} as the estimate of \eqn{\mu_{\text{MIA}}(x)}. Note that when \code{outer_model} is saturated with respect to \eqn{X} (e.g., \code{g_hat ~ X1 * X2} for binary predictors), this reduces to the sample mean of \eqn{\hat{g}(x, w)} among units with \eqn{X = x} and \eqn{R_X = R_W = 1}.
+\emph{Step 3:} One regresses the fitted outcome means \eqn{\hat{g}(X, W)} on the predictor(s) \eqn{X} among units with \eqn{R_X = R_W = 1}, using the model specified by \code{outer_model}, and takes the prediction at \eqn{X = x} as the estimate of \eqn{\mu_{\text{MIA}}(x)}. Note that when \code{outer_model} is saturated with respect to \eqn{X} (e.g., \code{g_hat ~ X1 * X2} for binary predictors), this reduces to the sample mean of \eqn{\hat{g}(x, w)} among units with \eqn{X = x} and \eqn{R_X = R_W = 1}.
 }
 \examples{
 set.seed(1234)

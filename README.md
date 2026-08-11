@@ -71,9 +71,9 @@ The package provides two estimators of this identifying functional,
 referred to as the noniterative conditional expectation (NICE) and
 iterative conditional expectation (ICE) approaches. The `mia` function
 applies the NICE approach and the `mia_ice` function applies the ICE
-approach.Both functions obtain point estimates of the identifying
-functional of $`\mu_{\text{MIA}}(x_1)`$ and $`\mu_{\text{MIA}}(x_2)`$ as
-well as contrasts between them (differences, ratios).
+approach. Both functions obtain point estimates of the identifying
+functionals of $`\mu_{\text{MIA}}(x_1)`$ and $`\mu_{\text{MIA}}(x_2)`$
+as well as contrasts between them (differences, ratios).
 
 #### MIA Method via Noniterative Conditional Expectation
 
@@ -154,16 +154,16 @@ The `mia_ice` function implements the ICE approach to estimate
 $`\mu_{\text{MIA}}(x)`$. The ICE approach is based on re-expressing the
 identifying functional as
 ``` math
-\mu_{\text{MIA}}(x) = E \left[ \, E [ Y | X=x, W, M=1 ] \mid X=x, R_W = R_X = 1 \, \right]
+\mu_{\text{MIA}}(x) = E \left[ \, E [ Y | X, W, M=1 ] \mid X=x, R_W = R_X = 1 \, \right]
 ```
 and fitting regression models for each of the conditional expectations.
 Specifically, the ICE approach involves the following steps: (1) fit a
 model for the conditional outcome mean
 $`g(x, w) = E [ Y | X=x, W=w, M=1 ]`$ using the complete cases; (2) for
 every unit with $`X`$ and $`W`$ observed, compute the fitted outcome
-mean $`\hat{g}(x, w)`$ at the target value $`x`$ and the unit’s observed
-$`w`$; and (3) regress these fitted outcome means on $`X`$ and take the
-prediction at $`X = x`$ as the estimate.
+mean $`\hat{g}(X, W)`$ at the unit’s observed $`X`$ and $`W`$; and (3)
+regress these fitted outcome means on $`X`$ and take the prediction at
+$`X = x`$ as the estimate.
 
 The `mia_ice` function requires specifying the following regression
 models:
