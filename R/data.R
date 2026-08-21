@@ -30,7 +30,7 @@
 #'   \item Rows where all variables are missing are removed from the dataset.
 #' }
 #'
-#' @seealso \code{\link{mia}}
+#' @seealso \code{\link{mia_nice}}, \code{\link{mia_ice}}
 #'
 #' @keywords datasets
 "dat.sim"

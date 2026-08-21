@@ -1,4 +1,4 @@
-#' MIA Method
+#' MIA Method via the Noniterative Conditional Expectation (NICE) Approach
 #'
 #' This function implements the marginalization over incomplete auxiliaries (MIA) method (Mathur et al. 2026). For an outcome variable \eqn{Y}, predictor variable \eqn{X}, and auxiliary variable \eqn{W}, this function estimates the conditional outcome mean identified by
 #' \deqn{
@@ -44,15 +44,15 @@
 #' Mathur MB, Seaman S, Zhang W, McGrath S, Shpitser I. (2026). \emph{Estimating conditional means under missingness-not-at-random with incomplete auxiliary variables}. \url{doi.org/10.13140/RG.2.2.30750.19524}.
 #' @examples
 #' set.seed(1234)
-#' mia(data = dat.sim,
-#'     X_names = c("X1", "X2"),
-#'     X_values_1 = c(0, 1), X_values_2 = c(0, 0),
-#'     Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2)
+#' mia_nice(data = dat.sim,
+#'          X_names = c("X1", "X2"),
+#'          X_values_1 = c(0, 1), X_values_2 = c(0, 0),
+#'          Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2)
 #'
 #'
 #' @export
 
-mia <- function(data, X_names, X_values_1, X_values_2 = NULL,
+mia_nice <- function(data, X_names, X_values_1, X_values_2 = NULL,
                 contrast_type,
                 Y_model, Y_type,
                 W_model, W_type,

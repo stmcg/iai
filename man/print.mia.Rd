@@ -20,13 +20,13 @@ No value is returned.
 Print method for objects of class "mia"
 }
 \examples{
-res <- mia(data = dat.sim,
-           X_names = c("X1", "X2"),
-           X_values_1 = c(0, 1), X_values_2 = c(0, 0),
-           Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2)
+res <- mia_nice(data = dat.sim,
+                X_names = c("X1", "X2"),
+                X_values_1 = c(0, 1), X_values_2 = c(0, 0),
+                Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2)
 print(res)
 
 }
 \seealso{
-\code{\link{mia}}
+\code{\link{mia_nice}}, \code{\link{mia_ice}}
 }

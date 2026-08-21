@@ -95,7 +95,7 @@ test_that("get_CI works on a mia_ice object", {
   set.seed(1234)
   res <- mia_ice(data = dat.sim,
                  X_names = c("X1", "X2"), X_values_1 = c(0, 1),
-                 Y_model = Y ~ W * X1 * X2, outer_model = g_hat ~ X1 * X2)
+                 Y_model = Y ~ W + X1 + X2, outer_model = g_hat ~ X1 * X2)
   res_ci <- get_CI(res, n_boot = 50, type = 'perc', show_progress = FALSE)
 
   expect_true(is.finite(res_ci$ci_1$percent[4]))

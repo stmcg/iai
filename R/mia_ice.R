@@ -27,7 +27,7 @@
 #' \item{fit_Y}{fitted model for Y}
 #' \item{fit_outer}{fitted outer regression of the fitted outcome means on \eqn{X}}
 #' \item{...}{additional elements}
-#' @seealso \code{\link{mia}}, \code{\link{print.mia}}, \code{\link{get_CI}}
+#' @seealso \code{\link{print.mia}}, \code{\link{get_CI}}
 #'
 #' @details
 #'

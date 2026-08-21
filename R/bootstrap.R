@@ -1,8 +1,8 @@
 #' Bootstrap-based confidence intervals for MIA
 #'
-#' This function applies nonparametric bootstrap to construct confidence intervals around the conditional mean estimates obtained by \code{\link{mia}}. This function is a wrapper for the \code{\link[boot]{boot}} and \code{\link[boot]{boot.ci}} functions from the \pkg{boot} package.
+#' This function applies nonparametric bootstrap to construct confidence intervals around the conditional mean estimates obtained by \code{\link{mia_nice}} or \code{\link{mia_ice}}. This function is a wrapper for the \code{\link[boot]{boot}} and \code{\link[boot]{boot.ci}} functions from the \pkg{boot} package.
 #'
-#' @param mia_res Output from the \code{mia} function.
+#' @param mia_res Output from the \code{\link{mia_nice}} or \code{\link{mia_ice}} function.
 #' @param n_boot Numeric scalar specifying the number of bootstrap replicates to use
 #' @param type Character string specifying the type of confidence interval. The options are \code{"norm"}, \code{"basic"}, \code{"perc"}, and \code{"bca"}.
 #' @param conf Numeric scalar specifying the level of the confidence interval. The default is \code{0.95}.
@@ -11,9 +11,9 @@
 #' @param show_progress Logical scalar indicating whether to show a progress bar during bootstrap. Default is \code{TRUE}. The progress bar will not be displayed when parallelization is used.
 #'
 #' @return An object of class "mia_ci". This object is a list with the following elements:
-#' \item{ci_1}{An object of class "boot.ci" which contains the output of the \code{\link[boot]{boot.ci}} function applied for the confidence interval around the mean under \code{X_values_1} in \code{\link{mia}}.}
-#' \item{ci_2}{An object of class "boot.ci" which contains the output of the \code{\link[boot]{boot.ci}} function applied for the confidence interval around the mean under \code{X_values_2} in \code{\link{mia}} (if applicable).}
-#' \item{ci_contrast}{An object of class "boot.ci" which contains the output of the \code{\link[boot]{boot.ci}} function applied for the confidence interval around the contrast between mean under \code{X_values_1} versus \code{X_values_2} in \code{\link{mia}} (if applicable).}
+#' \item{ci_1}{An object of class "boot.ci" which contains the output of the \code{\link[boot]{boot.ci}} function applied for the confidence interval around the mean under \code{X_values_1} in \code{\link{mia_nice}} or \code{\link{mia_ice}}.}
+#' \item{ci_2}{An object of class "boot.ci" which contains the output of the \code{\link[boot]{boot.ci}} function applied for the confidence interval around the mean under \code{X_values_2} in \code{\link{mia_nice}} or \code{\link{mia_ice}}. (if applicable).}
+#' \item{ci_contrast}{An object of class "boot.ci" which contains the output of the \code{\link[boot]{boot.ci}} function applied for the confidence interval around the contrast between mean under \code{X_values_1} versus \code{X_values_2} in \code{\link{mia_nice}} or \code{\link{mia_ice}} (if applicable).}
 #' \item{bres}{An object of class "boot" which contains the output of the \code{\link[boot]{boot}} function. Users can access the bootstrap replicates through the element \code{t} in this object.}
 #' \item{...}{additional elements}
 #'
@@ -21,10 +21,10 @@
 #'
 #' @examples
 #' set.seed(1234)
-#' res <- mia(data = dat.sim,
-#'            X_names = c("X1", "X2"),
-#'            X_values_1 = c(0, 1), X_values_2 = c(0, 0),
-#'            Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2)
+#' res <- mia_nice(data = dat.sim,
+#'                 X_names = c("X1", "X2"),
+#'                 X_values_1 = c(0, 1), X_values_2 = c(0, 0),
+#'                 Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2)
 #' res_ci <- get_CI(mia_res = res, n_boot = 50, type = 'perc')
 #' res_ci
 #'
@@ -84,7 +84,7 @@ get_CI <- function(mia_res, n_boot = 1000, type = 'bca', conf = 0.95,
                      Y_type = mia_res$Y_type,
                      outer_model = mia_res$outer_model)
     } else {
-      fit <- mia(data = dat_boot,
+      fit <- mia_nice(data = dat_boot,
                  X_names = mia_res$X_names,
                  X_values_1 = mia_res$X_values_1,
                  X_values_2 = mia_res$X_values_2,
