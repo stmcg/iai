@@ -1,8 +1,8 @@
 # Tests for contrast types and related functionality
 
-test_that("mia ratio contrast works correctly", {
+test_that("mia_nice ratio contrast works correctly", {
   set.seed(1234)
-  res <- mia(data = dat.sim,
+  res <- mia_nice(data = dat.sim,
              X_names = c("X1", "X2"),
              X_values_1 = c(0, 1), X_values_2 = c(0, 0),
              contrast_type = 'ratio',
@@ -15,9 +15,9 @@ test_that("mia ratio contrast works correctly", {
   expect_equal(res$contrast_est, res$mean_est_1 / res$mean_est_2, tolerance = 1e-10)
 })
 
-test_that("mia difference contrast works correctly", {
+test_that("mia_nice difference contrast works correctly", {
   set.seed(1234)
-  res <- mia(data = dat.sim,
+  res <- mia_nice(data = dat.sim,
              X_names = c("X1", "X2"),
              X_values_1 = c(0, 1), X_values_2 = c(0, 0),
              contrast_type = 'difference',
@@ -30,9 +30,9 @@ test_that("mia difference contrast works correctly", {
   expect_equal(res$contrast_est, res$mean_est_1 - res$mean_est_2, tolerance = 1e-10)
 })
 
-test_that("mia contrast_type = 'none' with X_values_2", {
+test_that("mia_nice contrast_type = 'none' with X_values_2", {
   set.seed(1234)
-  res <- mia(data = dat.sim,
+  res <- mia_nice(data = dat.sim,
              X_names = c("X1", "X2"),
              X_values_1 = c(0, 1), X_values_2 = c(0, 0),
              contrast_type = 'none',
@@ -44,9 +44,9 @@ test_that("mia contrast_type = 'none' with X_values_2", {
   expect_equal(res$contrast_type, 'none')
 })
 
-test_that("mia default contrast_type when X_values_2 provided", {
+test_that("mia_nice default contrast_type when X_values_2 provided", {
   set.seed(1234)
-  res <- mia(data = dat.sim,
+  res <- mia_nice(data = dat.sim,
              X_names = c("X1", "X2"),
              X_values_1 = c(0, 1), X_values_2 = c(0, 0),
              # contrast_type not specified
@@ -56,9 +56,9 @@ test_that("mia default contrast_type when X_values_2 provided", {
   expect_true(!is.na(res$contrast_est))
 })
 
-test_that("mia bootstrap CI works with ratio contrast", {
+test_that("mia_nice bootstrap CI works with ratio contrast", {
   set.seed(1234)
-  res <- mia(data = dat.sim,
+  res <- mia_nice(data = dat.sim,
              X_names = c("X1", "X2"),
              X_values_1 = c(0, 1), X_values_2 = c(0, 0),
              contrast_type = 'ratio',
@@ -71,9 +71,9 @@ test_that("mia bootstrap CI works with ratio contrast", {
   expect_true(inherits(res_ci$ci_contrast, "bootci"))
 })
 
-test_that("mia bootstrap CI works with difference contrast", {
+test_that("mia_nice bootstrap CI works with difference contrast", {
   set.seed(1234)
-  res <- mia(data = dat.sim,
+  res <- mia_nice(data = dat.sim,
              X_names = c("X1", "X2"),
              X_values_1 = c(0, 1), X_values_2 = c(0, 0),
              contrast_type = 'difference',
@@ -86,9 +86,9 @@ test_that("mia bootstrap CI works with difference contrast", {
   expect_true(inherits(res_ci$ci_contrast, "bootci"))
 })
 
-test_that("mia bootstrap CI with contrast_type = 'none'", {
+test_that("mia_nice bootstrap CI with contrast_type = 'none'", {
   set.seed(1234)
-  res <- mia(data = dat.sim,
+  res <- mia_nice(data = dat.sim,
              X_names = c("X1", "X2"),
              X_values_1 = c(0, 1), X_values_2 = c(0, 0),
              contrast_type = 'none',

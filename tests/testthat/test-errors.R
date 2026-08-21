@@ -1,9 +1,9 @@
 # Tests for error handling and edge cases
 
-test_that("mia errors on missing Y column", {
+test_that("mia_nice errors on missing Y column", {
   dat_noY <- dat.sim[, c("X1", "X2", "W")]
   expect_error(
-    mia(data = dat_noY,
+    mia_nice(data = dat_noY,
         X_names = c("X1", "X2"),
         X_values_1 = c(0, 1),
         Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2),
@@ -11,9 +11,9 @@ test_that("mia errors on missing Y column", {
   )
 })
 
-test_that("mia errors on missing X_names columns", {
+test_that("mia_nice errors on missing X_names columns", {
   expect_error(
-    mia(data = dat.sim,
+    mia_nice(data = dat.sim,
         X_names = c("X1", "X3"),  # X3 doesn't exist
         X_values_1 = c(0, 1),
         Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2),
@@ -21,9 +21,9 @@ test_that("mia errors on missing X_names columns", {
   )
 })
 
-test_that("mia errors on invalid Y_model (not a formula)", {
+test_that("mia_nice errors on invalid Y_model (not a formula)", {
   expect_error(
-    mia(data = dat.sim,
+    mia_nice(data = dat.sim,
         X_names = c("X1", "X2"),
         X_values_1 = c(0, 1),
         Y_model = "Y ~ W + X1 + X2", W_model = W ~ X1 + X2),
@@ -31,9 +31,9 @@ test_that("mia errors on invalid Y_model (not a formula)", {
   )
 })
 
-test_that("mia errors on Y_model with wrong LHS", {
+test_that("mia_nice errors on Y_model with wrong LHS", {
   expect_error(
-    mia(data = dat.sim,
+    mia_nice(data = dat.sim,
         X_names = c("X1", "X2"),
         X_values_1 = c(0, 1),
         Y_model = Outcome ~ W + X1 + X2, W_model = W ~ X1 + X2),
@@ -41,9 +41,9 @@ test_that("mia errors on Y_model with wrong LHS", {
   )
 })
 
-test_that("mia errors on invalid W_model (not formula or list)", {
+test_that("mia_nice errors on invalid W_model (not formula or list)", {
   expect_error(
-    mia(data = dat.sim,
+    mia_nice(data = dat.sim,
         X_names = c("X1", "X2"),
         X_values_1 = c(0, 1),
         Y_model = Y ~ W + X1 + X2, W_model = "W ~ X1 + X2"),
@@ -51,9 +51,9 @@ test_that("mia errors on invalid W_model (not formula or list)", {
   )
 })
 
-test_that("mia errors on W_model list with non-formula element", {
+test_that("mia_nice errors on W_model list with non-formula element", {
   expect_error(
-    mia(data = dat.sim,
+    mia_nice(data = dat.sim,
         X_names = c("X1", "X2"),
         X_values_1 = c(0, 1),
         Y_model = Y ~ W + X1 + X2, W_model = list(W ~ X1 + X2, "invalid")),
@@ -61,10 +61,10 @@ test_that("mia errors on W_model list with non-formula element", {
   )
 })
 
-test_that("mia errors on missing W column in data", {
+test_that("mia_nice errors on missing W column in data", {
   dat_noW <- dat.sim[, c("Y", "X1", "X2")]
   expect_error(
-    mia(data = dat_noW,
+    mia_nice(data = dat_noW,
         X_names = c("X1", "X2"),
         X_values_1 = c(0, 1),
         Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2),
@@ -72,9 +72,9 @@ test_that("mia errors on missing W column in data", {
   )
 })
 
-test_that("mia errors on X_values length mismatch", {
+test_that("mia_nice errors on X_values length mismatch", {
   expect_error(
-    mia(data = dat.sim,
+    mia_nice(data = dat.sim,
         X_names = c("X1", "X2"),
         X_values_1 = c(0),  # Wrong length
         Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2),
@@ -82,12 +82,12 @@ test_that("mia errors on X_values length mismatch", {
   )
 })
 
-test_that("mia errors on invalid X_values for categorical predictors", {
+test_that("mia_nice errors on invalid X_values for categorical predictors", {
   dat_catX <- dat.sim
   dat_catX$X1 <- factor(dat_catX$X1, levels = c(0, 1))
 
   expect_error(
-    mia(data = dat_catX,
+    mia_nice(data = dat_catX,
         X_names = c("X1", "X2"),
         X_values_1 = c(2, 1),  # 2 is not a valid level
         Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2),
@@ -95,12 +95,12 @@ test_that("mia errors on invalid X_values for categorical predictors", {
   )
 })
 
-test_that("mia errors on empty data_fit_Y", {
+test_that("mia_nice errors on empty data_fit_Y", {
   dat_all_missing <- dat.sim
   dat_all_missing$Y <- NA  # All Y missing
 
   expect_error(
-    mia(data = dat_all_missing,
+    mia_nice(data = dat_all_missing,
         X_names = c("X1", "X2"),
         X_values_1 = c(0, 1),
         Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2),
@@ -108,7 +108,7 @@ test_that("mia errors on empty data_fit_Y", {
   )
 })
 
-test_that("mia errors on empty data_fit_W", {
+test_that("mia_nice errors on empty data_fit_W", {
   # Create scenario where W is missing for all cases with complete X
   # This will make data_fit_W empty
   dat_missing_W <- dat.sim
@@ -117,7 +117,7 @@ test_that("mia errors on empty data_fit_W", {
   dat_missing_W$W[complete_X] <- NA
 
   expect_error(
-    mia(data = dat_missing_W,
+    mia_nice(data = dat_missing_W,
         X_names = c("X1", "X2"),
         X_values_1 = c(0, 1),
         Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2),
@@ -125,14 +125,14 @@ test_that("mia errors on empty data_fit_W", {
   )
 })
 
-test_that("mia errors on type inference failure for W", {
+test_that("mia_nice errors on type inference failure for W", {
   dat_unknown <- dat.sim
   # Create a character variable that can't be inferred (not binary, not factor, not numeric)
   dat_unknown$W <- paste0("level_", dat_unknown$W)
   dat_unknown$W <- as.character(dat_unknown$W)  # Character with multiple unique values, not inferrable
 
   expect_error(
-    mia(data = dat_unknown,
+    mia_nice(data = dat_unknown,
         X_names = c("X1", "X2"),
         X_values_1 = c(0, 1),
         Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2),
@@ -140,12 +140,12 @@ test_that("mia errors on type inference failure for W", {
   )
 })
 
-test_that("mia errors on type inference failure for Y", {
+test_that("mia_nice errors on type inference failure for Y", {
   dat_unknown <- dat.sim
   dat_unknown$Y <- as.character(dat_unknown$Y)  # Character, not inferrable
 
   expect_error(
-    mia(data = dat_unknown,
+    mia_nice(data = dat_unknown,
         X_names = c("X1", "X2"),
         X_values_1 = c(0, 1),
         Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2),
@@ -153,9 +153,9 @@ test_that("mia errors on type inference failure for Y", {
   )
 })
 
-test_that("mia errors on invalid W_type", {
+test_that("mia_nice errors on invalid W_type", {
   expect_error(
-    mia(data = dat.sim,
+    mia_nice(data = dat.sim,
         X_names = c("X1", "X2"),
         X_values_1 = c(0, 1),
         Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2,
@@ -164,9 +164,9 @@ test_that("mia errors on invalid W_type", {
   )
 })
 
-test_that("mia errors on invalid Y_type", {
+test_that("mia_nice errors on invalid Y_type", {
   expect_error(
-    mia(data = dat.sim,
+    mia_nice(data = dat.sim,
         X_names = c("X1", "X2"),
         X_values_1 = c(0, 1),
         Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2,
@@ -175,14 +175,14 @@ test_that("mia errors on invalid Y_type", {
   )
 })
 
-test_that("mia errors on W_model dependency order violation", {
+test_that("mia_nice errors on W_model dependency order violation", {
   dat_multiW <- dat.sim
   dat_multiW$W2 <- rnorm(nrow(dat_multiW))
 
   # W2 depends on W1, but W1 is listed first - this should work
   # But if we reverse the order incorrectly, it should fail
   expect_error(
-    mia(data = dat_multiW,
+    mia_nice(data = dat_multiW,
         X_names = c("X1", "X2"),
         X_values_1 = c(0, 1),
         Y_model = Y ~ W + W2 + X1 + X2,
@@ -191,7 +191,7 @@ test_that("mia errors on W_model dependency order violation", {
   )
 })
 
-test_that("mia errors on categorical W without factor encoding", {
+test_that("mia_nice errors on categorical W without factor encoding", {
   dat_catW <- dat.sim
   # Create a categorical variable with 3+ levels that's not a factor
   dat_catW$W <- ifelse(dat_catW$W == 0, "A",
@@ -202,7 +202,7 @@ test_that("mia errors on categorical W without factor encoding", {
   dat_catW$W <- as.character(dat_catW$W)  # Not a factor, but has 3+ levels
 
   expect_error(
-    mia(data = dat_catW,
+    mia_nice(data = dat_catW,
         X_names = c("X1", "X2"),
         X_values_1 = c(0, 1),
         Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2,
@@ -211,9 +211,9 @@ test_that("mia errors on categorical W without factor encoding", {
   )
 })
 
-test_that("mia errors on binary W specified as categorical", {
+test_that("mia_nice errors on binary W specified as categorical", {
   expect_error(
-    mia(data = dat.sim,
+    mia_nice(data = dat.sim,
         X_names = c("X1", "X2"),
         X_values_1 = c(0, 1),
         Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2,

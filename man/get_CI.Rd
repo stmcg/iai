@@ -15,7 +15,7 @@ get_CI(
 )
 }
 \arguments{
-\item{mia_res}{Output from the \code{mia} function.}
+\item{mia_res}{Output from the \code{\link{mia_nice}} or \code{\link{mia_ice}} function.}
 
 \item{n_boot}{Numeric scalar specifying the number of bootstrap replicates to use}
 
@@ -31,23 +31,23 @@ get_CI(
 }
 \value{
 An object of class "mia_ci". This object is a list with the following elements:
-\item{ci_1}{An object of class "boot.ci" which contains the output of the \code{\link[boot]{boot.ci}} function applied for the confidence interval around the mean under \code{X_values_1} in \code{\link{mia}}.}
-\item{ci_2}{An object of class "boot.ci" which contains the output of the \code{\link[boot]{boot.ci}} function applied for the confidence interval around the mean under \code{X_values_2} in \code{\link{mia}} (if applicable).}
-\item{ci_contrast}{An object of class "boot.ci" which contains the output of the \code{\link[boot]{boot.ci}} function applied for the confidence interval around the contrast between mean under \code{X_values_1} versus \code{X_values_2} in \code{\link{mia}} (if applicable).}
+\item{ci_1}{An object of class "boot.ci" which contains the output of the \code{\link[boot]{boot.ci}} function applied for the confidence interval around the mean under \code{X_values_1} in \code{\link{mia_nice}} or \code{\link{mia_ice}}.}
+\item{ci_2}{An object of class "boot.ci" which contains the output of the \code{\link[boot]{boot.ci}} function applied for the confidence interval around the mean under \code{X_values_2} in \code{\link{mia_nice}} or \code{\link{mia_ice}}. (if applicable).}
+\item{ci_contrast}{An object of class "boot.ci" which contains the output of the \code{\link[boot]{boot.ci}} function applied for the confidence interval around the contrast between mean under \code{X_values_1} versus \code{X_values_2} in \code{\link{mia_nice}} or \code{\link{mia_ice}} (if applicable).}
 \item{bres}{An object of class "boot" which contains the output of the \code{\link[boot]{boot}} function. Users can access the bootstrap replicates through the element \code{t} in this object.}
 \item{...}{additional elements}
 
 Mathur MB, Seaman S, Zhang W, McGrath S, Shpitser I. (2026). \emph{Estimating conditional means under missingness-not-at-random with incomplete auxiliary variables}. \url{doi.org/10.13140/RG.2.2.30750.19524}.
 }
 \description{
-This function applies nonparametric bootstrap to construct confidence intervals around the conditional mean estimates obtained by \code{\link{mia}}. This function is a wrapper for the \code{\link[boot]{boot}} and \code{\link[boot]{boot.ci}} functions from the \pkg{boot} package.
+This function applies nonparametric bootstrap to construct confidence intervals around the conditional mean estimates obtained by \code{\link{mia_nice}} or \code{\link{mia_ice}}. This function is a wrapper for the \code{\link[boot]{boot}} and \code{\link[boot]{boot.ci}} functions from the \pkg{boot} package.
 }
 \examples{
 set.seed(1234)
-res <- mia(data = dat.sim,
-           X_names = c("X1", "X2"),
-           X_values_1 = c(0, 1), X_values_2 = c(0, 0),
-           Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2)
+res <- mia_nice(data = dat.sim,
+                X_names = c("X1", "X2"),
+                X_values_1 = c(0, 1), X_values_2 = c(0, 0),
+                Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2)
 res_ci <- get_CI(mia_res = res, n_boot = 50, type = 'perc')
 res_ci
 

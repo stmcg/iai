@@ -21,7 +21,7 @@ Print method for objects of class "mia_ci"
 }
 \examples{
 set.seed(1234)
-res <- mia(data = dat.sim,
+res <- mia_nice(data = dat.sim,
            X_names = c("X1", "X2"),
            X_values_1 = c(0, 1), X_values_2 = c(0, 0),
            Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2)

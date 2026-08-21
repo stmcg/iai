@@ -38,6 +38,6 @@ missingness-not-at-random and an incomplete auxiliary variable.
 }
 }
 \seealso{
-\code{\link{mia}}
+\code{\link{mia_nice}}, \code{\link{mia_ice}}
 }
 \keyword{datasets}

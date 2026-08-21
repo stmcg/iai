@@ -1,10 +1,10 @@
 # Tests for edge cases and special scenarios
 
-test_that("mia works with single predictor", {
+test_that("mia_nice works with single predictor", {
   set.seed(1234)
   dat_singleX <- dat.sim[, c("Y", "X1", "W")]
 
-  res <- mia(data = dat_singleX,
+  res <- mia_nice(data = dat_singleX,
              X_names = "X1",
              X_values_1 = 1,
              Y_model = Y ~ W + X1, W_model = W ~ X1)
@@ -14,9 +14,9 @@ test_that("mia works with single predictor", {
   expect_equal(res$contrast_type, 'none')
 })
 
-test_that("mia works with return_simulated_data = TRUE", {
+test_that("mia_nice works with return_simulated_data = TRUE", {
   set.seed(1234)
-  res <- mia(data = dat.sim,
+  res <- mia_nice(data = dat.sim,
              X_names = c("X1", "X2"),
              X_values_1 = c(0, 1), X_values_2 = c(0, 0),
              Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2,
@@ -32,7 +32,7 @@ test_that("mia works with return_simulated_data = TRUE", {
 })
 
 
-test_that("mia handles categorical W with explicit W_type", {
+test_that("mia_nice handles categorical W with explicit W_type", {
   set.seed(1234)
   dat_catW <- dat.sim
   W1_ind <- which(dat_catW$W == 1)
@@ -40,7 +40,7 @@ test_that("mia handles categorical W with explicit W_type", {
   dat_catW[W1_ind[1:round(W1_n / 2)], 'W'] <- 2
   dat_catW$W <- as.factor(dat_catW$W)
 
-  res <- mia(data = dat_catW,
+  res <- mia_nice(data = dat_catW,
              X_names = c("X1", "X2"),
              X_values_1 = c(0, 1),
              Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2,
@@ -50,12 +50,12 @@ test_that("mia handles categorical W with explicit W_type", {
   expect_equal(res$W_type, "categorical")
 })
 
-test_that("mia handles binary Y with explicit Y_type", {
+test_that("mia_nice handles binary Y with explicit Y_type", {
   set.seed(1234)
   dat_binY <- dat.sim
   dat_binY$Y <- ifelse(dat_binY$Y > median(dat_binY$Y, na.rm = TRUE), 1, 0)
 
-  res <- mia(data = dat_binY,
+  res <- mia_nice(data = dat_binY,
              X_names = c("X1", "X2"),
              X_values_1 = c(0, 1),
              Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2,
@@ -67,9 +67,9 @@ test_that("mia handles binary Y with explicit Y_type", {
   expect_true(res$mean_est_1 >= 0 && res$mean_est_1 <= 1)
 })
 
-test_that("mia works with only X_values_1 (no contrast)", {
+test_that("mia_nice works with only X_values_1 (no contrast)", {
   set.seed(1234)
-  res <- mia(data = dat.sim,
+  res <- mia_nice(data = dat.sim,
              X_names = c("X1", "X2"),
              X_values_1 = c(0, 1),
              # No X_values_2
@@ -83,9 +83,9 @@ test_that("mia works with only X_values_1 (no contrast)", {
 
 
 
-test_that("mia print methods work correctly", {
+test_that("mia_nice print methods work correctly", {
   set.seed(1234)
-  res <- mia(data = dat.sim,
+  res <- mia_nice(data = dat.sim,
              X_names = c("X1", "X2"),
              X_values_1 = c(0, 1), X_values_2 = c(0, 0),
              Y_model = Y ~ W + X1 + X2, W_model = W ~ X1 + X2)
