@@ -126,7 +126,6 @@ get_CI <- function(mia_res, n_boot = 1000, type = 'bca', conf = 0.95,
       !('L' %in% names(boot.ci_args))){
     # The default type "reg" fails in this setting. Changing to type = "jack"
     message(paste0("Using jackknife to estimate the acceleration parameter in the BCa interval because the number of bootstrap replicates is smaller than the sample size. This step can be computationally intensive. Consider increasing the number of bootstrap replicates to be larger than the sample size to avoid using jackknife."))
-    boot.ci_args$L <- boot::empinf(boot.ci_args$boot.out, type = "jack")
   }
   ci_1 <- bca_safe_ci(boot.ci_args, index = 1)
   ci_2 <- NULL; ci_contrast <- NULL
@@ -150,6 +149,11 @@ bca_safe_ci <- function(boot.ci_args, index){
 
   if (boot.ci_args$type == 'bca'){
     cis <- tryCatch({
+      if (boot.ci_args$boot.out$R < nrow(boot.ci_args$boot.out$data) &
+          !('L' %in% names(boot.ci_args))){
+        boot.ci_args$L <- boot::empinf(boot.ci_args$boot.out,
+                                       type = "jack", index = index)
+      }
       do.call(boot::boot.ci, boot.ci_args)
     },
     error = function(e) {
