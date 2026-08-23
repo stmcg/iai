@@ -14,7 +14,7 @@ The `miapack` package implements methods to estimate conditional outcome
 means in settings with missingness-not-at-random and incomplete
 auxiliary variables. Specifically, this package implements the
 marginalization over incomplete auxiliaries (MIA) method proposed by
-[Mathur et al. (2026)](doi.org/10.13140/RG.2.2.30750.19524).
+[Mathur et al. (2026)](https://doi.org/10.13140/RG.2.2.30750.19524).
 
 ## Installation
 

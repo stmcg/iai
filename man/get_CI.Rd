@@ -7,7 +7,7 @@
 get_CI(
   mia_res,
   n_boot = 1000,
-  type = "bca",
+  type = "perc",
   conf = 0.95,
   boot_args = list(),
   boot.ci_args = list(),
@@ -37,7 +37,7 @@ An object of class "mia_ci". This object is a list with the following elements:
 \item{bres}{An object of class "boot" which contains the output of the \code{\link[boot]{boot}} function. Users can access the bootstrap replicates through the element \code{t} in this object.}
 \item{...}{additional elements}
 
-Mathur MB, Seaman S, Zhang W, McGrath S, Shpitser I. (2026). \emph{Estimating conditional means under missingness-not-at-random with incomplete auxiliary variables}. \url{doi.org/10.13140/RG.2.2.30750.19524}.
+Mathur MB, Seaman S, Zhang W, McGrath S, Shpitser I. (2026). \emph{Estimating conditional means under missingness-not-at-random with incomplete auxiliary variables}. \doi{10.13140/RG.2.2.30750.19524}.
 }
 \description{
 This function applies nonparametric bootstrap to construct confidence intervals around the conditional mean estimates obtained by \code{\link{mia_nice}} or \code{\link{mia_ice}}. This function is a wrapper for the \code{\link[boot]{boot}} and \code{\link[boot]{boot.ci}} functions from the \pkg{boot} package.

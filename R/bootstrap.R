@@ -17,7 +17,7 @@
 #' \item{bres}{An object of class "boot" which contains the output of the \code{\link[boot]{boot}} function. Users can access the bootstrap replicates through the element \code{t} in this object.}
 #' \item{...}{additional elements}
 #'
-#' Mathur MB, Seaman S, Zhang W, McGrath S, Shpitser I. (2026). \emph{Estimating conditional means under missingness-not-at-random with incomplete auxiliary variables}. \url{doi.org/10.13140/RG.2.2.30750.19524}.
+#' Mathur MB, Seaman S, Zhang W, McGrath S, Shpitser I. (2026). \emph{Estimating conditional means under missingness-not-at-random with incomplete auxiliary variables}. \doi{10.13140/RG.2.2.30750.19524}.
 #'
 #' @examples
 #' set.seed(1234)
@@ -35,7 +35,7 @@
 #'
 #' @export
 #'
-get_CI <- function(mia_res, n_boot = 1000, type = 'bca', conf = 0.95,
+get_CI <- function(mia_res, n_boot = 1000, type = 'perc', conf = 0.95,
                    boot_args = list(), boot.ci_args = list(), show_progress = TRUE) {
 
   # Error checking for misunderstandings about how arguments are passed into the boot and boot.ci functions
